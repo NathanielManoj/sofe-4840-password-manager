@@ -20,4 +20,12 @@ def derive_key(password, salt):
     dklen=32
     )
 
-
+def encrypt(plaintext, key):
+# plaintext is expected to be bytes, and key is expected to be a 32-byte key derived from the `derive_key` function.
+# generating IV using os.urandom
+    iv = os.urandom(12)
+    aesgcm = AESGCM(key)
+    ciphertext = aesgcm.encrypt(iv, plaintext, None)
+    return ciphertext, iv
+    
+    

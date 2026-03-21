@@ -28,4 +28,9 @@ def encrypt(plaintext, key):
     ciphertext = aesgcm.encrypt(iv, plaintext, None)
     return ciphertext, iv
     
+def decrypt(ciphertext, key, iv):
+# ciphertext is expected to be bytes, key is expected to be a 32-byte key derived from the `derive_key` function, and iv is expected to be a 12-byte initialization vector.
+    aesgcm = AESGCM(key)
+    plaintext = aesgcm.decrypt(iv, ciphertext, None)
+    return plaintext
     

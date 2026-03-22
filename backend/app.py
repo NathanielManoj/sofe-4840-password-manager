@@ -99,11 +99,15 @@ def delete():
     index = data['index']
     
     credentials = session.get('credentials', [])
+    
+    #handle invalid index
+    if index < 0 or index >= len(credentials):
+        return jsonify({"success": False, "error": "Invalid index"}), 400
+    
     credentials.pop(index)
     
     key = base64.b64decode(session['key'])
     save_vault(credentials, key)
-    
     session['credentials'] = credentials
     
     return jsonify({"success": True})

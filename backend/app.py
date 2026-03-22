@@ -54,3 +54,36 @@ def login():
     session['credentials'] = credentials
     session.permanent = True
     return jsonify({"success": True})
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    credentials = session.get('credentials', [])
+    return render_template('dashboard.html', credentials=credentials)
+
+@app.route('/add', methods=['POST'])
+@login_required
+def add():
+    data = request.get_json()
+    
+    # get current credentials from session
+    credentials = session.get('credentials', [])
+    
+    # build new credential
+    new_credential = {
+        "service": data['service'],
+        "username": data['username'],
+        "password": data['password']
+    }
+    
+    # add to list
+    credentials.append(new_credential)
+    
+    # get key and save vault
+    key = base64.b64decode(session['key'])
+    save_vault(credentials, key)
+    
+    # update session
+    session['credentials'] = credentials
+    
+    return jsonify({"success": True})

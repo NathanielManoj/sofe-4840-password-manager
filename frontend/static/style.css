@@ -1,0 +1,222 @@
+/* ─── Reset & Base ─────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    min-height: 100vh;
+}
+
+/* ─── Layout ───────────────────────────────────── */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Header ───────────────────────────────────── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-left h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ─── Login Card ───────────────────────────────── */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.card .logo {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.card h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+}
+
+.hint {
+    text-align: center;
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 16px;
+}
+
+/* ─── Forms ────────────────────────────────────── */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #4f46e5;
+}
+
+/* ─── Password Strength ────────────────────────── */
+.strength {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    height: 20px;
+}
+
+.strength.weak   { color: #ef4444; }
+.strength.medium { color: #f59e0b; }
+.strength.strong { color: #10b981; }
+
+/* ─── Buttons ──────────────────────────────────── */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: white;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-logout {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* ─── Credentials Table ────────────────────────── */
+.credentials-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.credentials-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.credentials-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.credentials-table tr:last-child td {
+    border-bottom: none;
+}
+
+.credentials-table tr:hover td {
+    background: #fafafa;
+}
+
+.password-field {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    width: 140px;
+    background: #f8f9fa;
+}
+
+/* ─── Empty State ──────────────────────────────── */
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 32px;
+    font-size: 0.95rem;
+}
+
+/* ─── Error Message ────────────────────────────── */
+.error-message {
+    color: #ef4444;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    min-height: 20px;
+    font-weight: 500;
+}

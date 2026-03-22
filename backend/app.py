@@ -11,7 +11,7 @@ from backend.vault_manager import save_vault, load_vault, vault_exists
 app = Flask(__name__, template_folder='../frontend/templates', static_folder='../frontend/static')
 
 from functools import wraps
-
+#add login_required decorator to protect routes that require authentication
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -20,6 +20,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+# Set up server-side sessions
 @app.route('/')
 def index():
     if 'key' in session:
@@ -55,12 +56,14 @@ def login():
     session.permanent = True
     return jsonify({"success": True})
 
+#add route for dashboard that shows credentials, requires login
 @app.route('/dashboard')
 @login_required
 def dashboard():
     credentials = session.get('credentials', [])
     return render_template('dashboard.html', credentials=credentials)
 
+#add route for adding a credential
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
@@ -87,3 +90,26 @@ def add():
     session['credentials'] = credentials
     
     return jsonify({"success": True})
+
+#add route for deleting a credential by index
+@app.route('/delete', methods=['POST'])
+@login_required
+def delete():
+    data = request.get_json()
+    index = data['index']
+    
+    credentials = session.get('credentials', [])
+    credentials.pop(index)
+    
+    key = base64.b64decode(session['key'])
+    save_vault(credentials, key)
+    
+    session['credentials'] = credentials
+    
+    return jsonify({"success": True})
+
+# The `logout` route clears the user's session and redirects them to the login page,
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))

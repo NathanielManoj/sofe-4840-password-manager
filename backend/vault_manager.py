@@ -14,35 +14,25 @@ def vault_exists():
     return os.path.exists(VAULT_PATH)
 
 # The `save_vault` function takes a dictionary of credentials and a key, and it saves the credentials to the vault file in an encrypted format. If the vault file does not exist, it generates a new salt. If the vault file already exists, it reads the existing salt from the file. The credentials are encrypted using AES-GCM, and the salt, IV, and ciphertext are stored in the vault file as base64-encoded strings for JSON serialization.
-def save_vault(credentials, key):
-    
+def save_vault(credentials, key, salt=None):
     if not vault_exists():
-        # generate new salt
-        salt = generate_salt()
-        
+        if salt is None:
+            salt = generate_salt()
     else:
-        # read existing salt from vault file
-        # hint: you'll need to open the file and read the salt field
-        # remember it's stored as base64 so you need to decode it
         with open(VAULT_PATH, 'r') as f:
             vault_data = json.load(f)
             salt = base64.b64decode(vault_data['salt'])
-            
-    # convert credentials to bytes
+
     plaintext = json.dumps(credentials).encode('utf-8')
-
-    # encrypt
     ciphertext, iv = encrypt(plaintext, key)
-
-    # build vault data structure
-    vault_data = {# store salt, iv, and ciphertext as base64 strings for JSON serialization
-        "salt": base64.b64encode(salt).decode(),
-        "iv": base64.b64encode(iv).decode(),
-        "ciphertext": base64.b64encode(ciphertext).decode()
+    
+    vault_data = {
+        "salt": base64.b64encode(salt).decode('utf-8'),
+        "iv": base64.b64encode(iv).decode('utf-8'),
+        "ciphertext": base64.b64encode(ciphertext).decode('utf-8')
     }
-
-    # write to disk
-    os.makedirs(os.path.dirname(VAULT_PATH), exist_ok=True)# ensure the vault directory exists
+    
+    os.makedirs(os.path.dirname(VAULT_PATH), exist_ok=True)
     with open(VAULT_PATH, 'w') as f:
         json.dump(vault_data, f)
 

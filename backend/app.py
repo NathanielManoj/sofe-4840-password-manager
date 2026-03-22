@@ -8,8 +8,18 @@ from flask import Flask, json, request, session, redirect, url_for, render_templ
 from flask_session import Session
 from backend.vault_manager import save_vault, load_vault, vault_exists, VAULT_PATH
 
-app = Flask(__name__, template_folder='../frontend/templates', static_folder='../frontend/static')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+app = Flask(__name__,
+            template_folder=os.path.join(BASE_DIR, 'frontend', 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'frontend', 'static'))
+app.config["SECRET_KEY"] = "sofe4840-password-manager-secret-key"
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_FILE_DIR"] = "./flask_session"
+app.config["PERMANENT_SESSION_LIFETIME"] = 300
+app.config["SESSION_PERMANENT"] = True
+
+Session(app)
 from functools import wraps
 #add login_required decorator to protect routes that require authentication
 def login_required(f):
@@ -51,16 +61,15 @@ def login():
     if request.method == 'POST':
         data = request.get_json()
         key = base64.b64decode(data['key'])
+        salt = base64.b64decode(data['salt'])
     
-    # brand new user — no vault exists yet
     if not vault_exists():
-        save_vault([], key)  # create empty vault
+        save_vault([], key, salt)
         session['key'] = data['key']
         session['credentials'] = []
         session.permanent = True
         return jsonify({"success": True})
     
-    # existing user — try to load vault
     credentials = load_vault(key)
     
     if credentials is None:

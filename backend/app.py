@@ -4,9 +4,9 @@
 import os
 import sys
 import base64
-from flask import Flask, request, session, redirect, url_for, render_template, jsonify
+from flask import Flask, json, request, session, redirect, url_for, render_template, jsonify
 from flask_session import Session
-from backend.vault_manager import save_vault, load_vault, vault_exists
+from backend.vault_manager import save_vault, load_vault, vault_exists, VAULT_PATH
 
 app = Flask(__name__, template_folder='../frontend/templates', static_folder='../frontend/static')
 
@@ -27,6 +27,21 @@ def index():
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
+# This route checks if the vault file exists and returns the salt if it does. The frontend can use this to determine if the user is new or returning, and to get the salt for key derivation.
+@app.route('/get-salt')
+def get_salt():
+    if not vault_exists():
+        return jsonify({"exists": False})
+    
+    with open(VAULT_PATH, 'r') as f:
+        vault_data = json.load(f)
+    
+    return jsonify({
+        "exists": True,
+        "salt": vault_data['salt']
+    })
+
+#add route for login that accepts POST requests with the master key, tries to load the vault, and returns success or failure
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':

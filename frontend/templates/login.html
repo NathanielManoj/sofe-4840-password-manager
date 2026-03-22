@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager — Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+
+            <div class="logo">
+                🔒
+            </div>
+
+            <h1>Password Manager</h1>
+            <p class="subtitle">Enter your master password to unlock your vault</p>
+
+            <div class="form-group">
+                <label for="password">Master Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Enter master password"
+                    onkeypress="if(event.key === 'Enter') handleLogin()"
+                />
+            </div>
+
+            <div id="error" class="error-message"></div>
+
+            <button class="btn btn-primary" onclick="handleLogin()">
+                Unlock Vault
+            </button>
+
+            <p class="hint">
+                New user? Your vault will be created automatically on first login.
+            </p>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='crypto.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager — Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <span class="logo">🔒</span>
+                <h1>Password Vault</h1>
+            </div>
+            <a href="/logout" class="btn btn-logout">Logout</a>
+        </div>
+
+        <!-- Credentials List -->
+        <div class="card">
+            <h2>Stored Credentials</h2>
+
+            {% if credentials %}
+                <table class="credentials-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for credential in credentials %}
+                        <tr>
+                            <td>{{ credential.service }}</td>
+                            <td>{{ credential.username }}</td>
+                            <td>
+                                <input 
+                                    type="password" 
+                                    id="password-{{ loop.index0 }}"
+                                    value="{{ credential.password }}"
+                                    readonly
+                                    class="password-field"
+                                />
+                                <button 
+                                    id="toggle-{{ loop.index0 }}"
+                                    class="btn btn-small"
+                                    onclick="togglePassword({{ loop.index0 }})">
+                                    Show
+                                </button>
+                            </td>
+                            <td>
+                                <button 
+                                    class="btn btn-danger btn-small"
+                                    onclick="handleDelete({{ loop.index0 }})">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty-message">
+                    No credentials stored yet. Add your first one below!
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Add Credential Form -->
+        <div class="card">
+            <h2>Add New Credential</h2>
+
+            <div class="form-group">
+                <label for="service">Service</label>
+                <input 
+                    type="text" 
+                    id="service" 
+                    placeholder="e.g. Netflix, Gmail"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username / Email</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    placeholder="e.g. user@email.com"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="new-password">Password</label>
+                <input 
+                    type="password" 
+                    id="new-password" 
+                    placeholder="Enter password"
+                    oninput="updateStrengthIndicator(this.value)"
+                />
+                <div id="strength-indicator" class="strength"></div>
+            </div>
+
+            <div id="error" class="error-message"></div>
+
+            <button class="btn btn-primary" onclick="handleAdd()">
+                Add Credential
+            </button>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='crypto.js') }}"></script>
+</body>
+</html>

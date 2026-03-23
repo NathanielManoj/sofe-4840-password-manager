@@ -1,3 +1,6 @@
+// Ashka Patel (100871256)
+// SOFE 4840U - Computer Security
+
 // ─── Base64 Helpers ───────────────────────────────────────────
 function arrayBufferToBase64(buffer) {
     const bytes = new Uint8Array(buffer);

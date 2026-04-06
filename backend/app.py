@@ -1,5 +1,4 @@
-# crypto_engine.py
-# Kishan Ratnasingam 100754728
+# app.py
 # SOFE 4840U - Computer Security
 import os
 import sys

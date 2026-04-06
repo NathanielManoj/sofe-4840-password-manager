@@ -1,4 +1,4 @@
-// Ashka Patel (100871256)
+// crypto.js
 // SOFE 4840U - Computer Security
 
 // ─── Base64 Helpers ───────────────────────────────────────────

@@ -1,6 +1,6 @@
 import pytest
-import sys
 import os
+import sys
 import base64
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -29,18 +29,18 @@ def client(monkeypatch, tmp_path):
 def get_test_key():
     salt = generate_salt()
     key = derive_key("TestPassword123!", salt)
-    return base64.b64encode(key).decode()
+    key_b64 = base64.b64encode(key).decode()
+    salt_b64 = base64.b64encode(salt).decode()
+    return key_b64, salt_b64
 
-# Test 1: GET /login returns 200
 def test_login_page_loads(client):
     response = client.get('/login')
     assert response.status_code == 200
 
-# Test 2: New user can login and vault gets created
 def test_new_user_login_creates_vault(client):
-    key_b64 = get_test_key()
+    key_b64, salt_b64 = get_test_key()
     response = client.post('/login',
-        json={"key": key_b64},
+        json={"key": key_b64, "salt": salt_b64},
         content_type='application/json'
     )
     data = response.get_json()
@@ -48,31 +48,26 @@ def test_new_user_login_creates_vault(client):
     assert data['success'] == True
     assert os.path.exists(TEST_VAULT_PATH)
 
-# Test 3: Wrong key returns 401
 def test_wrong_key_returns_401(client):
-    # first create a vault with one key
-    correct_key = get_test_key()
+    correct_key, salt_b64 = get_test_key()
     client.post('/login',
-        json={"key": correct_key},
+        json={"key": correct_key, "salt": salt_b64},
         content_type='application/json'
     )
     
-    # log out
     client.get('/logout')
     
-    # try to login with a different key
-    wrong_key = get_test_key()
+    wrong_key, new_salt = get_test_key()
     response = client.post('/login',
-        json={"key": wrong_key},
+        json={"key": wrong_key, "salt": new_salt},
         content_type='application/json'
     )
     assert response.status_code == 401
 
-# Test 4: Add credential works
 def test_add_credential(client):
-    key_b64 = get_test_key()
+    key_b64, salt_b64 = get_test_key()
     client.post('/login',
-        json={"key": key_b64},
+        json={"key": key_b64, "salt": salt_b64},
         content_type='application/json'
     )
     
@@ -88,15 +83,13 @@ def test_add_credential(client):
     assert response.status_code == 200
     assert data['success'] == True
 
-# Test 5: Delete credential works
 def test_delete_credential(client):
-    key_b64 = get_test_key()
+    key_b64, salt_b64 = get_test_key()
     client.post('/login',
-        json={"key": key_b64},
+        json={"key": key_b64, "salt": salt_b64},
         content_type='application/json'
     )
     
-    # add a credential first
     client.post('/add',
         json={
             "service": "Netflix",
@@ -106,7 +99,6 @@ def test_delete_credential(client):
         content_type='application/json'
     )
     
-    # now delete it
     response = client.post('/delete',
         json={"index": 0},
         content_type='application/json'
@@ -115,34 +107,29 @@ def test_delete_credential(client):
     assert response.status_code == 200
     assert data['success'] == True
 
-# Test 6: Dashboard requires login
 def test_dashboard_requires_login(client):
     response = client.get('/dashboard')
     assert response.status_code == 302
 
-# Test 7: Logout clears session
 def test_logout_clears_session(client):
-    key_b64 = get_test_key()
+    key_b64, salt_b64 = get_test_key()
     client.post('/login',
-        json={"key": key_b64},
+        json={"key": key_b64, "salt": salt_b64},
         content_type='application/json'
     )
     
     client.get('/logout')
     
-    # after logout dashboard should redirect to login
     response = client.get('/dashboard')
     assert response.status_code == 302
 
-# Test 8: Invalid delete index returns 400
 def test_invalid_delete_index(client):
-    key_b64 = get_test_key()
+    key_b64, salt_b64 = get_test_key()
     client.post('/login',
-        json={"key": key_b64},
+        json={"key": key_b64, "salt": salt_b64},
         content_type='application/json'
     )
     
-    # try to delete index 99 when vault is empty
     response = client.post('/delete',
         json={"index": 99},
         content_type='application/json'

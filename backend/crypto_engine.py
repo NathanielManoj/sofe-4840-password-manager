@@ -1,5 +1,4 @@
 # crypto_engine.py
-# Nathaniel Manoj 100817043
 # SOFE 4840U - Computer Security
 # This module provides functions for generating salts, deriving keys from passwords, and encrypting/decrypting data using AES-GCM.
 # It uses the `cryptography` library for AES-GCM encryption and decryption, and the `hashlib` library for key derivation using PBKDF2.

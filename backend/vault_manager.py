@@ -1,5 +1,4 @@
 # vault_manager.py
-# Hermon Estifanos 100803620
 # SOFE 4840U - Computer Security
 # This module provides functions for managing a vault that securely stores user credentials. It uses the `crypto_engine` module for encryption and decryption of the vault data, and it handles saving and loading the vault to and from a file in an encrypted format.
 import os
